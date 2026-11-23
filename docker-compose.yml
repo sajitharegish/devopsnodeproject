@@ -1,0 +1,45 @@
+
+services:
+  frontend:
+    image: sajitharegish/nodeprojectfrontend:latest
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: travelgo-frontend
+    ports:
+      - "80:80"
+    networks:
+      - scopeindia
+    restart: unless-stopped
+
+  backend:
+    image: sajitharegish/nodeprojectbackend:latest
+    container_name: travelgo-backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server:/app
+    env_file:
+      - ./server/.env
+    networks:
+      - scopeindia
+    restart: unless-stopped
+
+  database:
+    image: mysql:8
+    container_name: travelgo-database
+    environment:
+      MYSQL_ROOT_PASSWORD: RootPassword@123
+      MYSQL_DATABASE: travelgo
+      MYSQL_USER: traveluser
+      MYSQL_PASSWORD: TravelGo@12345
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    networks:
+      - scopeindia
+    restart: unless-stopped
+
+networks:
+  scopeindia:
+    external: true
+
